@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Currículo - ProCurriculum</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+   
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <a href="index.html">ProCurriculum</a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html#como-funciona">COMO FUNCIONA</a>
+                <a href="index.html#beneficios">BENEFÍCIOS</a>
+                <a href="index.html" class="back-btn">VOLTAR</a>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    
+    <main>
+        <div class="container">
+            <div class="form-container">
+                <h2>Gerador de Currículo</h2>
+            <form id="curriculoForm">
+                <div class="form-group">
+                    <label>Nome Completo:</label>
+                    <input type="text" id="nome" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Cidade/Estado:</label>
+                    <input type="text" id="localizacao" required>
+                </div>
+
+                <div class="form-group">
+                    <label>E-mail:</label>
+                    <input type="email" id="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                    <span id="emailError" class="error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>WhatsApp:</label>
+                    <input type="text" id="whatsapp" required maxlength="15" placeholder="(00) 00000-0000">
+                    <span id="whatsappError" class="error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>LinkedIn:</label>
+                    <input type="text" id="linkedin" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Objetivo:</label>
+                    <input type="text" id="objetivo" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Palavras-chave (separadas por |):</label>
+                    <input type="text" id="palavrasChave" placeholder="Ex: DESENVOLVIMENTO | GESTÃO | LIDERANÇA" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Resumo Profissional:</label>
+                    <textarea id="resumo" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Expertise (uma por linha):</label>
+                    <textarea id="expertise" placeholder="Digite cada expertise em uma nova linha" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Linguagens e Tecnologias (uma por linha):</label>
+                    <textarea id="linguagens" placeholder="Digite cada linguagem/tecnologia em uma nova linha"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Cursos e Certificações:</label>
+                    <div id="cursos-container">
+                       
+                    </div>
+                    <button type="button" id="adicionar-curso" class="btn-secondary">Adicionar Curso</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Experiência:</label>
+                    <select id="tipoExperiencia">
+                        <option value="profissional">Experiência Profissional</option>
+                        <option value="projetos">Projetos Relevantes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div id="experiencia-container">
+                      
+                    </div>
+                    <button type="button" id="adicionar-experiencia" class="btn-secondary">Adicionar Experiência/Projeto</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Formação:</label>
+                    <input type="text" id="curso" placeholder="Curso" required>
+                    <input type="text" id="instituicao" placeholder="Instituição" required>
+                    <input type="text" id="ano" placeholder="Ano" required>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn">Visualizar Currículo</button>
+                     
+
+                </div>
+            </form>
+        </div>
+
+        <div class="preview-container">
+            <div id="curriculo"></div>
+        </div>
+    </div>
+
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="logo">
+                    <div class="logo-icon"></div>
+                    <span>ProCurriculum</span>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html#como-funciona">Como Funciona</a>
+                    <a href="index.html#beneficios">Benefícios</a>
+                    <a href="termos.html">Termos de Uso</a>
+                </div>
+            </div>
+            <div class="social-links">
+                <p>Desenvolvido por:</p>
+                <div class="social-icons">
+                    <a href="https://github.com/LirielC" target="_blank" class="social-icon">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ProCurriculum. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+       
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProCurriculum - Gerador de Currículos Profissionais</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <span>ProCurriculum</span>
+            </div>
+            <div class="nav-links">
+                <a href="#como-funciona">COMO FUNCIONA</a>
+                <a href="#beneficios">BENEFÍCIOS</a>
+                <a href="gerador.html" class="signup-btn">CRIAR CURRÍCULO</a>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Crie um Currículo<br>Profissional em Minutos</h1>
+                <p>Destaque-se no mercado de trabalho com um currículo moderno e profissional. 
+                   Simples, rápido e eficiente.</p>
+                <div class="hero-buttons">
+                    <a href="gerador.html" class="primary-btn">CRIAR CURRÍCULO</a>
+                    <a href="#como-funciona" class="secondary-btn">COMO FUNCIONA</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="cv-preview">
+                    <div class="cv-header"></div>
+                    <div class="cv-content">
+                        <div class="cv-line"></div>
+                        <div class="cv-line"></div>
+                        <div class="cv-line short"></div>
+                    </div>
+                    <div class="cv-section">
+                        <div class="cv-line"></div>
+                        <div class="cv-line"></div>
+                        <div class="cv-line short"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="beneficios" class="features">
+            <h2>Por que escolher nosso gerador?</h2>
+            <p>Crie currículos profissionais de forma rápida e eficiente</p>
+            
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="feature-icon purple">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Design Profissional</h3>
+                    <p>Template moderno e otimizado para processos seletivos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon pink">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3>Fácil Edição</h3>
+                    <p>Interface intuitiva que permite criar seu currículo em minutos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon blue">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Download em PDF</h3>
+                    <p>Exporte seu currículo em PDF pronto para envio.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="como-funciona" class="how-it-works">
+            <h2>Como Funciona</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Preencha seus Dados</h3>
+                        <p>Insira suas informações profissionais no formulário intuitivo</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Visualize o Resultado</h3>
+                        <p>Veja em tempo real como seu currículo está ficando</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Baixe seu Currículo</h3>
+                        <p>Exporte em PDF e comece a enviar para as vagas</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <h2>Pronto para criar seu currículo profissional?</h2>
+            <p>Comece agora mesmo - é grátis e fácil!</p>
+            <a href="gerador.html" class="primary-btn">CRIAR MEU CURRÍCULO</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="logo">
+                    <div class="logo-icon"></div>
+                    <span>ProCurriculum</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#como-funciona">Como Funciona</a>
+                    <a href="#beneficios">Benefícios</a>
+                    <a href="termos.html">Termos de Uso</a>
+                </div>
+            </div>
+            <div class="social-links">
+                <p>Desenvolvido por:</p>
+                <div class="social-icons">
+                    <a href="https://github.com/LirielC" target="_blank" class="social-icon">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ProCurriculum. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+       
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
