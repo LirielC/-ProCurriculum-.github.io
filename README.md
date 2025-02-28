@@ -1,4 +1,4 @@
-# -LirielC-.github.io
+# ProCurriculum.github.io
 
 🚀 Gerador de Currículos Compatíveis com ATS
 Este projeto é uma aplicação web responsiva e moderna que permite a criação de currículos compatíveis com sistemas de rastreamento de candidatos (ATS). O usuário pode preencher seus dados de forma intuitiva e gerar um currículo profissional em PDF seguindo um modelo estruturado.
