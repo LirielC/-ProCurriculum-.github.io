@@ -155,7 +155,7 @@ O sistema é totalmente responsivo e funciona perfeitamente em:
 
 ## 👨‍💻 Desenvolvimento
 
-### **Autor**
+### **Autora**
 - **GitHub**: [LirielC](https://github.com/LirielC)
 
 ### **Tecnologias**
