@@ -58,7 +58,7 @@ O **ProCurriculum** é uma aplicação web moderna e intuitiva para criação de
 - **Responsividade**: Design mobile-first
 - **Animações**: Transições suaves e feedback visual
 
-## 🚀 Como Usar
+## 🤔 Como Usar
 
 ### **1. Acesso ao Sistema**
 - Acesse a página inicial: `index.html`
