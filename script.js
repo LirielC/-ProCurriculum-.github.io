@@ -27,14 +27,41 @@ document.getElementById('adicionar-curso').addEventListener('click', function() 
         <input type="text" class="curso-nome" placeholder="Nome do Curso">
         <input type="text" class="curso-instituicao" placeholder="Instituição">
         <input type="text" class="curso-ano" placeholder="Ano">
-        <button type="button" class="remover-curso">Remover</button>
+        <div class="curso-actions">
+            <button type="button" class="btn-icon remover-curso" title="Remover" aria-label="Remover"><i class="fas fa-trash"></i></button>
+            <button type="button" class="btn-icon mover-cima" title="Subir" aria-label="Subir"><i class="fas fa-arrow-up"></i></button>
+            <button type="button" class="btn-icon mover-baixo" title="Descer" aria-label="Descer"><i class="fas fa-arrow-down"></i></button>
+        </div>
     `;
     container.appendChild(novoCurso);
+    onDynamicChange();
 });
 
 document.getElementById('cursos-container').addEventListener('click', function(e) {
     if (e.target.classList.contains('remover-curso')) {
         e.target.parentElement.remove();
+        onDynamicChange();
+    }
+    if (e.target.classList.contains('mover-cima')) {
+        const item = e.target.closest('.curso-item');
+        if (item && item.previousElementSibling) {
+            item.parentElement.insertBefore(item, item.previousElementSibling);
+            onDynamicChange();
+        }
+    }
+    if (e.target.classList.contains('mover-baixo')) {
+        const item = e.target.closest('.curso-item');
+        if (item && item.nextElementSibling) {
+            item.parentElement.insertBefore(item.nextElementSibling, item);
+            onDynamicChange();
+        }
+    }
+});
+
+// Atualiza preview ao digitar nos campos dinâmicos
+document.getElementById('cursos-container').addEventListener('input', function(e) {
+    if (e.target.matches('input, textarea')) {
+        onDynamicChange();
     }
 });
 
@@ -44,20 +71,55 @@ document.getElementById('adicionar-experiencia').addEventListener('click', funct
     const novaExperiencia = document.createElement('div');
     novaExperiencia.className = 'experiencia-item';
     novaExperiencia.innerHTML = `
-        <input type="text" class="cargo" placeholder="Cargo/Nome do Projeto" required>
-        <input type="text" class="empresa" placeholder="Empresa/Tecnologias Utilizadas" required>
-        <input type="text" class="periodo" placeholder="Período" required>
-        <textarea class="realizacoes" placeholder="Digite cada realização/descrição em uma nova linha" required></textarea>
-        <button type="button" class="remover-experiencia">Remover</button>
+        <input type="text" class="cargo" placeholder="Cargo/Nome do Projeto">
+        <input type="text" class="empresa" placeholder="Empresa/Tecnologias Utilizadas">
+        <input type="text" class="periodo" placeholder="Período">
+        <textarea class="realizacoes" placeholder="Digite cada realização/descrição em uma nova linha"></textarea>
+        <div class="experiencia-actions">
+            <button type="button" class="btn-icon remover-experiencia" title="Remover" aria-label="Remover"><i class="fas fa-trash"></i></button>
+            <button type="button" class="btn-icon mover-cima" title="Subir" aria-label="Subir"><i class="fas fa-arrow-up"></i></button>
+            <button type="button" class="btn-icon mover-baixo" title="Descer" aria-label="Descer"><i class="fas fa-arrow-down"></i></button>
+        </div>
     `;
     container.appendChild(novaExperiencia);
+    onDynamicChange();
 });
 
 document.getElementById('experiencia-container').addEventListener('click', function(e) {
     if (e.target.classList.contains('remover-experiencia')) {
         e.target.parentElement.remove();
+        onDynamicChange();
+    }
+    if (e.target.classList.contains('mover-cima')) {
+        const item = e.target.closest('.experiencia-item');
+        if (item && item.previousElementSibling) {
+            item.parentElement.insertBefore(item, item.previousElementSibling);
+            onDynamicChange();
+        }
+    }
+    if (e.target.classList.contains('mover-baixo')) {
+        const item = e.target.closest('.experiencia-item');
+        if (item && item.nextElementSibling) {
+            item.parentElement.insertBefore(item.nextElementSibling, item);
+            onDynamicChange();
+        }
     }
 });
+
+document.getElementById('experiencia-container').addEventListener('input', function(e) {
+    if (e.target.matches('input, textarea')) {
+        onDynamicChange();
+    }
+});
+
+// Função utilitária para sincronizar preview e rascunho
+function onDynamicChange() {
+    try {
+        const dados = coletarDados();
+        salvarLocal(dados);
+        gerarCurriculo(dados);
+    } catch (_) { /* noop */ }
+}
 
 
 function coletarDados() {
@@ -89,6 +151,8 @@ function coletarDados() {
         linguagens: document.getElementById('linguagens').value.split('\n').filter(item => item.trim()),
         cursos: cursos,
         tipoExperiencia: document.getElementById('tipoExperiencia').value,
+        modelo: (document.getElementById('modelo') ? document.getElementById('modelo').value : 'classico'),
+        espacamento: (document.getElementById('espacamento') ? document.getElementById('espacamento').value : 'padrao'),
         experiencias: experiencias,
         formacao: {
             curso: document.getElementById('curso').value,
@@ -104,82 +168,97 @@ function gerarCurriculo(dados) {
         'EXPERIÊNCIAS PROFISSIONAIS' : 
         'PROJETOS RELEVANTES';
 
+    const isModerno = dados.modelo === 'moderno';
+    const wrapperStart = isModerno ? '<div class="cv cv--moderno">' : '<div class="cv cv--classico">';
+    const wrapperEnd = '</div>';
+
+    const curriculoEl = document.getElementById('curriculo');
+    const wasEmpty = !curriculoEl || curriculoEl.innerHTML.trim().length === 0;
+
     const html = `
-        <div class="header" style="text-align: center; margin-bottom: 20px;">
-            <h1 style="text-transform: uppercase; margin-bottom: 10px;">${dados.nome}</h1>
-            <p style="margin-bottom: 15px;">${dados.localizacao} | ${dados.email} | ${dados.whatsapp} | ${dados.linkedin}</p>
-        </div>
+        ${wrapperStart}
+            <div class="header">
+                <h1>${dados.nome?.toUpperCase() || ''}</h1>
+                <p class="contacts">${[dados.localizacao, dados.email, dados.whatsapp, dados.linkedin].filter(Boolean).join(' | ')}</p>
+            </div>
 
-        <div class="section" style="margin-bottom: 15px;">
-            <strong>OBJETIVO:</strong> ${dados.objetivo}
-        </div>
+            <div class="section">
+                <div class="section-title">OBJETIVO</div>
+                <p>${dados.objetivo || ''}</p>
+            </div>
 
-        <div class="keywords" style="background-color: #f5f5f5; padding: 10px; margin-bottom: 20px; text-align: center;">
-            ${dados.palavrasChave.map(palavra => `<span style="font-weight: bold;">${palavra.toUpperCase()}</span>`).join(' | ')}
-        </div>
+            <div class="keywords">
+                ${dados.palavrasChave.map(palavra => `<span>${String(palavra || '').toUpperCase()}</span>`).join(' | ')}
+            </div>
 
-        <div class="section" style="margin-bottom: 20px;">
-            <div class="section-title" style="font-weight: bold; margin-bottom: 10px;">RESUMO</div>
-            <p>${dados.resumo}</p>
-        </div>
+            <div class="section">
+                <div class="section-title">RESUMO</div>
+                <p>${dados.resumo || ''}</p>
+            </div>
 
-        <div class="section" style="margin-bottom: 20px;">
-            <div class="section-title" style="font-weight: bold; margin-bottom: 10px;">EXPERTISE</div>
-            <ul style="margin-left: 20px;">
-                ${dados.expertise.map(item => `<li>${item}</li>`).join('')}
-            </ul>
-        </div>
+            <div class="section">
+                <div class="section-title">EXPERTISE</div>
+                <ul>
+                    ${dados.expertise.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
 
-        ${dados.linguagens.length > 0 ? `
-        <div class="section" style="margin-bottom: 20px;">
-            <div class="section-title" style="font-weight: bold; margin-bottom: 10px;">LINGUAGENS E TECNOLOGIAS</div>
-            <ul style="margin-left: 20px;">
-                ${dados.linguagens.map(item => `<li>${item}</li>`).join('')}
-            </ul>
-        </div>
-        ` : ''}
+            ${dados.linguagens.length > 0 ? `
+            <div class="section">
+                <div class="section-title">LINGUAGENS E TECNOLOGIAS</div>
+                <ul>
+                    ${dados.linguagens.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>` : ''}
 
-        <div class="section" style="margin-bottom: 20px;">
-            <div class="section-title" style="font-weight: bold; margin-bottom: 10px;">${tipoExperienciaTitle}</div>
-            ${dados.experiencias.map(exp => `
-                <div style="margin-bottom: 15px;">
-                    <p style="font-weight: bold;">${exp.cargo} | ${exp.empresa} - ${exp.periodo}</p>
-                    <ul style="margin-left: 20px;">
-                        ${exp.realizacoes.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-            `).join('')}
-        </div>
+            <div class="section">
+                <div class="section-title">${tipoExperienciaTitle}</div>
+                ${dados.experiencias.map(exp => `
+                    <div class="xp">
+                        <p class="xp-title">${exp.cargo} | ${exp.empresa} - ${exp.periodo}</p>
+                        <ul>
+                            ${exp.realizacoes.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                `).join('')}
+            </div>
 
-        <div class="section" style="margin-bottom: 20px;">
-            <div class="section-title" style="font-weight: bold; margin-bottom: 10px;">EDUCAÇÃO</div>
-            <p><strong>${dados.formacao.curso}</strong> | ${dados.formacao.instituicao} | ${dados.formacao.ano}</p>
-        </div>
+            <div class="section">
+                <div class="section-title">EDUCAÇÃO</div>
+                <p><strong>${dados.formacao.curso}</strong> | ${dados.formacao.instituicao} | ${dados.formacao.ano}</p>
+            </div>
 
-        ${dados.cursos.length > 0 ? `
-        <div class="section" style="margin-bottom: 20px;">
-            <div class="section-title" style="font-weight: bold; margin-bottom: 10px;">CURSOS E CERTIFICAÇÕES</div>
-            ${dados.cursos.map(curso => `
-                <p><strong>${curso.nome}</strong> | ${curso.instituicao} | ${curso.ano}</p>
-            `).join('')}
-        </div>
-        ` : ''}
+            ${dados.cursos.length > 0 ? `
+            <div class="section">
+                <div class="section-title">CURSOS E CERTIFICAÇÕES</div>
+                ${dados.cursos.map(curso => `
+                    <p><strong>${curso.nome}</strong> | ${curso.instituicao} | ${curso.ano}</p>
+                `).join('')}
+            </div>` : ''}
+        ${wrapperEnd}
     `;
 
     document.getElementById('curriculo').innerHTML = html;
+
+    // Se for primeira geração em telas pequenas, rola o preview para o topo
+    if (window.innerWidth <= 1024) {
+        const pc = document.querySelector('.preview-container');
+        if (pc) pc.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
     return html;
 }
 
 
 function gerarPDF() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const dados = coletarDados();
 
     
     const margemEsquerda = 20;
     const larguraUtil = 170;
-    const espacoEntreLinhas = 7;
+    const espacamentoSelecionado = dados.espacamento || 'padrao';
+    const espacoEntreLinhas = espacamentoSelecionado === 'compacto' ? 6 : espacamentoSelecionado === 'espacado' ? 9 : 7;
     let posicaoAtual = 20;
 
     
@@ -189,18 +268,24 @@ function gerarPDF() {
         doc.setFont('helvetica', estilo);
         doc.setTextColor(cor);
         const linhas = doc.splitTextToSize(texto, larguraUtil);
-        doc.text(linhas, margemEsquerda, posicaoAtual);
-        posicaoAtual += (linhas.length * espacoEntreLinhas);
+        linhas.forEach((linha) => {
+            verificarPaginacao();
+            doc.text(linha, margemEsquerda, posicaoAtual);
+            posicaoAtual += espacoEntreLinhas;
+        });
     };
 
     const adicionarTextoCenter = (texto, fonte = 12, estilo = 'normal') => {
         if (!texto) return;
         doc.setFontSize(fonte);
         doc.setFont('helvetica', estilo);
-        const textWidth = doc.getTextWidth(texto);
-        const x = (doc.internal.pageSize.width - textWidth) / 2;
-        doc.text(texto, x, posicaoAtual);
-        posicaoAtual += espacoEntreLinhas;
+        const linhas = doc.splitTextToSize(texto, larguraUtil);
+        const centroX = doc.internal.pageSize.width / 2;
+        linhas.forEach((linha) => {
+            verificarPaginacao();
+            doc.text(linha, centroX, posicaoAtual, { align: 'center' });
+            posicaoAtual += espacoEntreLinhas;
+        });
     };
 
     const adicionarSecao = (titulo, espacoAdicional = 2) => {
@@ -237,11 +322,12 @@ function gerarPDF() {
     adicionarTexto(dados.objetivo, 10);
     posicaoAtual += 5;
 
-    verificarPaginacao(20);
-    adicionarBackground(posicaoAtual - 4, 12);
     const palavrasChaveText = dados.palavrasChave.join(' | ').toUpperCase();
+    const linhasKeywords = doc.splitTextToSize(palavrasChaveText, larguraUtil);
+    verificarPaginacao(linhasKeywords.length * espacoEntreLinhas + 10);
+    adicionarBackground(posicaoAtual - 4, (linhasKeywords.length * espacoEntreLinhas) + 4);
     adicionarTextoCenter(palavrasChaveText, 10, 'bold');
-    posicaoAtual += 10;
+    posicaoAtual += 5;
 
     adicionarSecao('RESUMO');
     adicionarTexto(dados.resumo, 10);
@@ -292,7 +378,7 @@ function gerarPDF() {
         });
     }
 
-    const nomeArquivo = `curriculo-${dados.nome.toLowerCase().replace(/\s+/g, '-')}.pdf`;
+    const nomeArquivo = `curriculo-${(dados.nome || 'meu').toLowerCase().replace(/\s+/g, '-')}.pdf`;
     doc.save(nomeArquivo);
 }
 
@@ -315,6 +401,7 @@ document.getElementById('curriculoForm').addEventListener('submit', function(e) 
     }
     const dados = coletarDados();
         gerarCurriculo(dados);
+        salvarLocal(dados);
 
         
         let botaoPDF = document.getElementById('gerarPDF');
@@ -374,13 +461,22 @@ document.getElementById('curriculoForm').addEventListener('submit', function(e) 
         document.getElementById('curriculo').innerHTML = '';
 
         
-        document.getElementById('adicionar-curso').click();
-        document.getElementById('adicionar-experiencia').click();
+    // Inicializa com um bloco de projeto/experiência opcional
+    document.getElementById('adicionar-experiencia').click();
     }
 
     
     window.addEventListener('load', function() {
         const actionsDiv = document.querySelector('.actions');
+        // Garante preview acima no mobile: move o nó para o topo do container, se necessário
+        const container = document.querySelector('.container');
+        const preview = document.getElementById('previewContainer');
+        const form = document.getElementById('formContainer');
+        if (container && preview && form) {
+            if (window.innerWidth <= 1024 && container.firstElementChild !== preview) {
+                container.insertBefore(preview, container.firstElementChild);
+            }
+        }
 
         
         const limparBtn = document.createElement('button');
@@ -399,10 +495,170 @@ document.getElementById('curriculoForm').addEventListener('submit', function(e) 
         pdfBtn.onclick = gerarPDF;
         actionsDiv.appendChild(pdfBtn);
 
+        const imprimirBtn = document.createElement('button');
+        imprimirBtn.type = 'button';
+        imprimirBtn.className = 'btn btn-secondary';
+        imprimirBtn.textContent = 'Imprimir';
+        imprimirBtn.onclick = () => window.print();
+        actionsDiv.appendChild(imprimirBtn);
+
+        const exportarBtn = document.createElement('button');
+        exportarBtn.type = 'button';
+        exportarBtn.className = 'btn btn-secondary';
+        exportarBtn.textContent = 'Exportar JSON';
+        exportarBtn.onclick = exportarJSON;
+        actionsDiv.appendChild(exportarBtn);
+
+        const importarBtn = document.createElement('button');
+        importarBtn.type = 'button';
+        importarBtn.className = 'btn btn-secondary';
+        importarBtn.textContent = 'Importar JSON';
+        importarBtn.onclick = () => document.getElementById('importarArquivo').click();
+        actionsDiv.appendChild(importarBtn);
+
+        const docxBtn = document.createElement('button');
+        docxBtn.type = 'button';
+        docxBtn.className = 'btn btn-secondary';
+        docxBtn.textContent = 'Baixar DOCX';
+        docxBtn.onclick = gerarDOCX;
+        actionsDiv.appendChild(docxBtn);
+
         
         document.getElementById('adicionar-curso').click();
         document.getElementById('adicionar-experiencia').click();
+
+        const salvos = carregarLocal();
+        if (salvos) {
+            preencherFormulario(salvos);
+            gerarCurriculo(coletarDados());
+        }
     });
 
-    
-    
+// Autosave localStorage
+function salvarLocal(dados) {
+    try { localStorage.setItem('procurriculum_draft', JSON.stringify(dados)); } catch (_) {}
+}
+
+function carregarLocal() {
+    try {
+        const raw = localStorage.getItem('procurriculum_draft');
+        return raw ? JSON.parse(raw) : null;
+    } catch (_) { return null; }
+}
+
+function exportarJSON() {
+    const dados = coletarDados();
+    const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `procurriculum-${(dados.nome || 'dados')}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+document.getElementById('importarArquivo')?.addEventListener('change', function(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        try {
+            const dados = JSON.parse(String(reader.result || '{}'));
+            preencherFormulario(dados);
+            salvarLocal(coletarDados());
+            gerarCurriculo(coletarDados());
+        } catch (err) {
+            alert('Arquivo inválido');
+        }
+    };
+    reader.readAsText(file);
+});
+
+function preencherFormulario(d) {
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    setVal('nome', d.nome);
+    setVal('localizacao', d.localizacao);
+    setVal('email', d.email);
+    setVal('whatsapp', d.whatsapp);
+    setVal('linkedin', d.linkedin);
+    setVal('objetivo', d.objetivo);
+    setVal('palavrasChave', (d.palavrasChave || []).join(' | '));
+    setVal('resumo', d.resumo);
+    setVal('expertise', (d.expertise || []).join('\n'));
+    setVal('linguagens', (d.linguagens || []).join('\n'));
+    setVal('tipoExperiencia', d.tipoExperiencia || 'profissional');
+    const modeloSelect = document.getElementById('modelo');
+    if (modeloSelect) modeloSelect.value = d.modelo || 'classico';
+
+    document.getElementById('cursos-container').innerHTML = '';
+    (d.cursos || []).forEach(curso => {
+        document.getElementById('adicionar-curso').click();
+        const item = document.querySelector('#cursos-container .curso-item:last-child');
+        if (!item) return;
+        item.querySelector('.curso-nome').value = curso.nome || '';
+        item.querySelector('.curso-instituicao').value = curso.instituicao || '';
+        item.querySelector('.curso-ano').value = curso.ano || '';
+    });
+
+    document.getElementById('experiencia-container').innerHTML = '';
+    (d.experiencias || []).forEach(exp => {
+        document.getElementById('adicionar-experiencia').click();
+        const item = document.querySelector('#experiencia-container .experiencia-item:last-child');
+        if (!item) return;
+        item.querySelector('.cargo').value = exp.cargo || '';
+        item.querySelector('.empresa').value = exp.empresa || '';
+        item.querySelector('.periodo').value = exp.periodo || '';
+        item.querySelector('.realizacoes').value = (exp.realizacoes || []).join('\n');
+    });
+
+    setVal('curso', d.formacao?.curso);
+    setVal('instituicao', d.formacao?.instituicao);
+    setVal('ano', d.formacao?.ano);
+}
+
+// Preview em tempo real e autosave em inputs
+['nome','localizacao','email','whatsapp','linkedin','objetivo','palavrasChave','resumo','expertise','linguagens','curso','instituicao','ano','tipoExperiencia','modelo','espacamento']
+  .forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => { const d = coletarDados(); salvarLocal(d); gerarCurriculo(d); });
+    el.addEventListener('change', () => { const d = coletarDados(); salvarLocal(d); gerarCurriculo(d); });
+});
+
+// Exportação DOCX básica (ATS-friendly)
+async function gerarDOCX() {
+    const dados = coletarDados();
+    const { Document, Packer, Paragraph, HeadingLevel, TextRun } = window.docx;
+
+    const makeHeading = (text) => new Paragraph({ text, heading: HeadingLevel.HEADING_2, spacing: { after: 120 } });
+    const makePara = (text) => new Paragraph({ children: [new TextRun({ text })], spacing: { after: 120 } });
+    const makeBullet = (text) => new Paragraph({ text, bullet: { level: 0 }, spacing: { after: 60 } });
+
+    const doc = new Document({ sections: [{ properties: {}, children: [
+        new Paragraph({ text: (dados.nome || '').toUpperCase(), heading: HeadingLevel.TITLE, spacing: { after: 200 } }),
+        makePara([dados.localizacao, dados.email, dados.whatsapp, dados.linkedin].filter(Boolean).join(' | ')),
+        makeHeading('OBJETIVO'),
+        makePara(dados.objetivo || ''),
+        makeHeading('PALAVRAS-CHAVE'),
+        makePara((dados.palavrasChave || []).map(k => String(k || '').toUpperCase()).join(' | ')),
+        makeHeading('RESUMO'),
+        makePara(dados.resumo || ''),
+        makeHeading('EXPERTISE'),
+        ...(dados.expertise || []).map(x => makeBullet(x)),
+        ...(dados.linguagens && dados.linguagens.length ? [makeHeading('LINGUAGENS E TECNOLOGIAS'), ...dados.linguagens.map(l => makeBullet(l))] : []),
+        makeHeading(dados.tipoExperiencia === 'profissional' ? 'EXPERIÊNCIAS PROFISSIONAIS' : 'PROJETOS RELEVANTES'),
+        ...((dados.experiencias || []).flatMap(exp => [
+            new Paragraph({ children: [ new TextRun({ text: `${exp.cargo} | ${exp.empresa} - ${exp.periodo}`, bold: true }) ], spacing: { after: 60 } }),
+            ...(exp.realizacoes || []).map(r => makeBullet(r)),
+        ])),
+        makeHeading('EDUCAÇÃO'),
+        makePara(`${dados.formacao?.curso || ''} | ${dados.formacao?.instituicao || ''} | ${dados.formacao?.ano || ''}`),
+        ...(dados.cursos && dados.cursos.length ? [makeHeading('CURSOS E CERTIFICAÇÕES'), ...dados.cursos.map(c => makePara(`${c.nome || ''} | ${c.instituicao || ''} | ${c.ano || ''}`))] : []),
+    ]}]});
+
+    const blob = await Packer.toBlob(doc);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `curriculo-${(dados.nome || 'meu').toLowerCase().replace(/\s+/g, '-')}.docx`;
+    a.click();
+}
