@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Currículo - ProCurriculum</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
     <link rel="stylesheet" href="gerador.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -30,7 +31,10 @@
     
     <main>
         <div class="container">
-            <div class="form-container">
+            <div class="preview-container" id="previewContainer">
+                <div id="curriculo"></div>
+            </div>
+            <div class="form-container" id="formContainer">
                 <h2>Gerador de Currículo</h2>
             <form id="curriculoForm">
                 <div class="form-group">
@@ -45,7 +49,7 @@
 
                 <div class="form-group">
                     <label>E-mail:</label>
-                    <input type="email" id="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                    <input type="email" id="email" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
                     <span id="emailError" class="error"></span>
                 </div>
 
@@ -94,10 +98,28 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Tipo de Experiência:</label>
+                    <label>Tipo de Experiência (opcional):</label>
                     <select id="tipoExperiencia">
                         <option value="profissional">Experiência Profissional</option>
                         <option value="projetos">Projetos Relevantes</option>
+                    </select>
+                    <small class="hint">Se não tiver experiência profissional, selecione "Projetos Relevantes".</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Modelo do Currículo:</label>
+                    <select id="modelo">
+                        <option value="classico">Clássico</option>
+                        <option value="moderno">Moderno</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Espaçamento do PDF:</label>
+                    <select id="espacamento">
+                        <option value="padrao">Padrão</option>
+                        <option value="compacto">Compacto</option>
+                        <option value="espacado">Espaçado</option>
                     </select>
                 </div>
 
@@ -115,17 +137,14 @@
                     <input type="text" id="ano" placeholder="Ano" required>
                 </div>
 
-                <div class="actions">
+                <div class="actions buttons-container">
                     <button type="submit" class="btn">Visualizar Currículo</button>
-                     
-
                 </div>
+                <input type="file" id="importarArquivo" accept="application/json" style="display:none" />
             </form>
         </div>
 
-        <div class="preview-container">
-            <div id="curriculo"></div>
-        </div>
+        
     </div>
 
     
